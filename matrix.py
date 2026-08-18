@@ -28,3 +28,12 @@ class Matrix:
             for value in row:
                 if not isinstance(value, (int, float)):
                     raise ValueError("행렬에는 숫자만 저장할 수 있습니다.")
+
+    def flatten(self):
+        flat_values = []
+
+        for row in self.values:
+            for value in row:
+                flat_values.append(value)
+
+        return flat_values

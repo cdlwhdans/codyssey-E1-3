@@ -179,9 +179,14 @@ class Simulator:
             pattern = Matrix([[1.0] * size for _ in range(size)])
             filter_ = Matrix([[1.0] * size for _ in range(size)])
 
-            average_time = self.npu.measure_average_time(pattern, filter_)
+            normal_time = self.npu.measure_average_time(pattern, filter_)
 
-            performance_results.append((size, average_time))
+            pattern_flat = pattern.flatten()
+            filter_flat = filter_.flatten()
+
+            flat_time = self.npu.measure_average_time_flat(pattern_flat, filter_flat)
+
+            performance_results.append((size, normal_time, flat_time))
 
         self._print_performance(performance_results)
 
@@ -212,18 +217,14 @@ class Simulator:
         print(f"판정: {result} | expected: {expected} | {status}")
 
     def _print_performance(self, results):
-        print("크기          평균 시간(ms)       연산 횟수")
-        print("---------------------------------------------")
+        print("크기       평균 시간(ms)    최적화 후(ms)     연산 횟수")
+        print("-------------------------------------------------------")
 
-        for size, average_time in results:
+        for size, average_time, flat_time in results:
             size_text = f"{size}x{size}"
             operation_count = size ** 2
 
-            print(
-                f"{size_text:<12}"
-                f"{average_time:>15.6f}"
-                f"{operation_count:>15}"
-            )
+            print(f"{size_text:<10} {average_time:>12.6f} {flat_time:>16.6f} {operation_count:>13}")
 
     def _print_summary(self, total, passed, failures):
         print(f"총 테스트: {total}개")

@@ -16,6 +16,17 @@ class NPU:
 
         return result
 
+    def calculate_mac_flat(self, pattern_values, filter_values):
+        if len(pattern_values) != len(filter_values):
+            raise ValueError("패턴과 필터의 크기가 일치해야 합니다.")
+
+        result = 0
+
+        for index in range(len(pattern_values)):
+            result += pattern_values[index] * filter_values[index]
+
+        return result
+
     def compare_scores(self, score_a, score_b):
         diff = score_a - score_b
 
@@ -49,6 +60,23 @@ class NPU:
         for _ in range(repeat):
             start = time.perf_counter()
             self.calculate_mac(pattern, filter_)
+            end = time.perf_counter()
+
+            total_time += (end - start)
+
+        average_time = total_time / repeat * 1000
+
+        return average_time
+
+    def measure_average_time_flat(self, pattern_values, filter_values, repeat=10):
+        if repeat <= 0:
+            raise ValueError("반복 횟수는 1 이상이어야 합니다.")
+
+        total_time = 0
+
+        for _ in range(repeat):
+            start = time.perf_counter()
+            self.calculate_mac_flat(pattern_values, filter_values)
             end = time.perf_counter()
 
             total_time += (end - start)
