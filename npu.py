@@ -1,6 +1,6 @@
 import time
 
-class MiniNPU:
+class NPU:
     def __init__(self, epsilon=1e-9):
         self.epsilon = epsilon
 
@@ -32,12 +32,18 @@ class MiniNPU:
         result = self.compare_scores(score_a, score_b)
 
         if result == 0:
-            return "UNDECIDED"
+            label = "UNDECIDED"
         elif result > 0:
-            return label_a
-        return label_b
+            label = label_a
+        else:
+            label = label_b
+
+        return score_a, score_b, label
 
     def measure_average_time(self, pattern, filter_, repeat=10):
+        if repeat <= 0:
+            raise ValueError("반복 횟수는 1 이상이어야 합니다.")
+        
         total_time = 0
 
         for _ in range(repeat):
