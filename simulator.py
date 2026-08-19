@@ -1,11 +1,12 @@
 from matrix import Matrix
 from npu import NPU
 from data_loader import DataLoader
-
+from pattern_generator import PatternGenerator
 class Simulator:
     def __init__(self, data_path="data.json"):
         self.npu = NPU()
         self.data_loader = DataLoader(data_path)
+        self.pattern_generator = PatternGenerator()
 
     def run(self):
         print("=== Mini NPU Simulator ===")
@@ -176,8 +177,8 @@ class Simulator:
         performance_results = []
 
         for size in (3, 5, 13, 25):
-            pattern = Matrix([[1.0] * size for _ in range(size)])
-            filter_ = Matrix([[1.0] * size for _ in range(size)])
+            pattern = self.pattern_generator.generate_cross(size)
+            filter_ = self.pattern_generator.generate_cross(size)
 
             normal_time = self.npu.measure_average_time(pattern, filter_)
 
