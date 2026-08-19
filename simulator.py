@@ -39,8 +39,29 @@ class Simulator:
         filter_a = self._input_matrix("필터 A", 3)
         filter_b = self._input_matrix("필터 B", 3)
 
-        self._print_section("[2] 패턴 입력")
-        pattern = self._input_matrix("패턴", 3)
+        print("1. 직접 입력")
+        print("2. Cross 자동 생성")
+        print("3. X 자동 생성")
+
+        while True:
+            try:
+                pattern_choice = int(input("선택: "))
+
+                if pattern_choice not in (1, 2, 3):
+                    print("1, 2, 3 중 하나를 입력해주세요.")
+                    continue
+
+                break
+
+            except ValueError:
+                print("유효한 숫자를 입력해주세요.")
+
+        if pattern_choice == 1:
+            pattern = self._input_matrix("패턴", 3)
+        elif pattern_choice == 2:
+            pattern = self.pattern_generator.generate_cross(3)
+        else:
+            pattern = self.pattern_generator.generate_x(3)
 
         score_a, score_b, result = self.npu.classify(pattern, filter_a, filter_b, "A", "B")
         average_time = self.npu.measure_average_time(pattern, filter_a)
